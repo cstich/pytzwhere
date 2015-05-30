@@ -53,7 +53,6 @@ class tzwhere(object):
 
         # Turn that into an internal mapping.
         self._construct_polygon_map(pgen)
-
         # Construct lookup shortcuts.
         self._construct_shortcuts()
 
