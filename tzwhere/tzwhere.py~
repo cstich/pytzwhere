@@ -18,8 +18,6 @@ except ImportError:
 import math
 import os
 import pickle
-import collections
-
 from shapely.geometry import Polygon, Point
 from shapely.prepared import prep
 

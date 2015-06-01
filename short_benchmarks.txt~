@@ -1,0 +1,38 @@
+-------------------------
+Before shapely
+-------------------------
+Reading json input file: /home/christoph/git/pytzwhere/tzwhere/tz_world_compact.json
+
+real	3m40.526s
+user	3m41.125s
+sys	0m0.180s
+
+
+-------------------------
+After shapely
+-------------------------
+Reading json input file: /home/christoph/git/pytzwhere/tzwhere/tz_world_compact.json
+
+real	1m48.208s
+user	1m48.052s
+sys	0m0.194s
+
+-------------------------
+After prepared geometry
+-------------------------
+Reading json input file: /home/christoph/git/pytzwhere/tzwhere/tz_world_compact.json
+
+real	0m25.655s
+user	0m25.507s
+sys	0m0.164s
+
+-------------------------
+After speeding up CSV import
+-------------------------
+
+Reading from CSV input file: /home/christoph/git/pytzwhere/tzwhere/tz_world.csv
+
+real	0m23.609s
+user	0m23.535s
+sys	0m0.088s
+
