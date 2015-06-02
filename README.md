@@ -14,7 +14,9 @@ If used as a library, basic usage is as follows:
     >>> print(tz.tzNameAt(35.29, -89.66))
     America/Chicago
 
-The polygons used for building the timezones are based on VMAP0. Sometimes points are outside a VMAP0 polygon, but are clearly within a certain timezone (see also this [discussion](https://github.com/mattbornski/tzwhere/issues/8). As a somewhat 'hacky' workaround and if you know that the point should have a timezone, you can tell the library to return the closest timezone if it doesn't find a proper timezone. This costs you another 80MB of RAM or so.
+
+The polygons used for building the timezones are based on VMAP0. Sometimes points are outside a VMAP0 polygon, but are clearly within a certain timezone (see also this [discussion](https://github.com/mattbornski/tzwhere/issues/8)). As a somewhat 'hacky' workaround you can tell the library to return the closest timezone if it doesn't find a proper timezone. This costs you another 80MB of RAM or so.
+
     >>> tz = tzwhere.tzwhere(closest=True)
     Reading csv input file: tz_world_compact.csv
     >>> tz.tzNameAt(40.7271, -73.98)
