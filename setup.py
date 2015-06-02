@@ -14,7 +14,7 @@ setup(
         'tzwhere': ['tz_world.json', 'tz_world_compact.json',
                     'tz_world.pickle', 'tz_world.csv']
         },
-    install_requires=['shapely']
+    install_requires=['shapely'],
     include_package_data=True,
     license='MIT License',
     description='Python library to look up timezone from lat / long offline',

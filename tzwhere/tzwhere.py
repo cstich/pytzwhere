@@ -36,7 +36,7 @@ class tzwhere(object):
     DEFAULT_CSV = os.path.join(os.path.dirname(__file__),
                                'tz_world.csv')
 
-    def __init__(self, input_kind='csv', path=None):
+    def __init__(self, input_kind='csv', path=None, closest=False):
 
         # Construct appropriate generator for (tz, polygon) pairs.
         if input_kind in ['json', 'pickle']:
@@ -48,18 +48,23 @@ class tzwhere(object):
             raise ValueError(input_kind)
 
         # Turn that into an internal mapping.
-        self._construct_polygon_map(pgen)
+        self._construct_polygon_map(pgen, closest=closest)
 
         # Construct lookup shortcuts.
         self._construct_shortcuts()
 
-
-    def _construct_polygon_map(self, polygon_generator):
+    def _construct_polygon_map(self, polygon_generator, closest=False):
         """Turn a (tz, polygon) generator, into our internal mapping."""
         self.timezoneNamesToPolygons = collections.defaultdict(list)
+        self.unprepTimezoneNamesToPolygons = collections.defaultdict(list)
+
         for (tzname, raw_poly) in polygon_generator:
+            poly = Polygon(tzwhere._raw_poly_to_poly(raw_poly))
             self.timezoneNamesToPolygons[tzname].append(
-                prep(Polygon(tzwhere._raw_poly_to_poly(raw_poly))))
+                prep(poly))
+            if closest:
+                self.unprepTimezoneNamesToPolygons[tzname].append(
+                    poly)
 
     def _construct_shortcuts(self):
 
@@ -105,7 +110,7 @@ class tzwhere(object):
                 self.timezoneLongitudeShortcuts[degree][tzname] = \
                     tuple(self.timezoneLongitudeShortcuts[degree][tzname])
 
-    def tzNameAt(self, latitude, longitude):
+    def tzNameAt(self, latitude, longitude, closest=False):
         point = Point(latitude, longitude)
         latTzOptions = self.timezoneLatitudeShortcuts[
             (math.floor(latitude / self.SHORTCUT_DEGREES_LATITUDE)
@@ -125,6 +130,19 @@ class tzwhere(object):
                     poly = self.timezoneNamesToPolygons[tzname][polyIndex]
                     if poly.contains_properly(point):
                         return tzname
+
+        # If closest is true and you can't find a valid timezone return the
+        # closest timezone you can find
+        distances = []
+        if not closest:
+            if possibleTimezones:
+                for tzname in possibleTimezones:
+                    polyIndices = set(latTzOptions[tzname]).intersection(set(lngTzOptions[tzname]))
+                    for polyIndex in polyIndices:
+                        poly = self.unprepTimezoneNamesToPolygons[tzname][polyIndex]
+                        d = poly.distance(point)
+                        distances.append((d, tzname))
+            return sorted(distances, key=lambda x: x[1])[0][1]
 
     @staticmethod
     def read_tzworld(input_kind='json', path=None):
