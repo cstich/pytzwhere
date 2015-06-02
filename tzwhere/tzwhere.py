@@ -134,7 +134,7 @@ class tzwhere(object):
         # If closest is true and you can't find a valid timezone return the
         # closest timezone you can find
         distances = []
-        if not closest:
+        if closest:
             if possibleTimezones:
                 for tzname in possibleTimezones:
                     polyIndices = set(latTzOptions[tzname]).intersection(set(lngTzOptions[tzname]))
