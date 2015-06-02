@@ -18,6 +18,8 @@ except ImportError:
 import math
 import os
 import pickle
+import collections
+
 from shapely.geometry import Polygon, Point
 from shapely.prepared import prep
 
@@ -54,17 +56,15 @@ class tzwhere(object):
 
     def _construct_polygon_map(self, polygon_generator):
         """Turn a (tz, polygon) generator, into our internal mapping."""
-        self.timezoneNamesToPolygons = {}
+        self.timezoneNamesToPolygons = collections.defaultdict(list)
         for (tzname, raw_poly) in polygon_generator:
-            if tzname not in self.timezoneNamesToPolygons:
-                self.timezoneNamesToPolygons[tzname] = []
             self.timezoneNamesToPolygons[tzname].append(
                 prep(Polygon(tzwhere._raw_poly_to_poly(raw_poly))))
 
     def _construct_shortcuts(self):
 
-        self.timezoneLongitudeShortcuts = {}
-        self.timezoneLatitudeShortcuts = {}
+        self.timezoneLongitudeShortcuts = collections.defaultdict(dict)
+        self.timezoneLatitudeShortcuts = collections.defaultdict(dict)
         for tzname in self.timezoneNamesToPolygons:
             for polyIndex, poly in enumerate(self.timezoneNamesToPolygons[tzname]):
                 lats = [x[0] for x in poly.context.exterior.coords]
@@ -79,8 +79,6 @@ class tzwhere(object):
                           * self.SHORTCUT_DEGREES_LATITUDE)
                 degree = minLng
                 while degree <= maxLng:
-                    if degree not in self.timezoneLongitudeShortcuts:
-                        self.timezoneLongitudeShortcuts[degree] = {}
 
                     if tzname not in self.timezoneLongitudeShortcuts[degree]:
                         self.timezoneLongitudeShortcuts[degree][tzname] = []
@@ -90,8 +88,6 @@ class tzwhere(object):
 
                 degree = minLat
                 while degree <= maxLat:
-                    if degree not in self.timezoneLatitudeShortcuts:
-                        self.timezoneLatitudeShortcuts[degree] = {}
 
                     if tzname not in self.timezoneLatitudeShortcuts[degree]:
                         self.timezoneLatitudeShortcuts[degree][tzname] = []
