@@ -1,7 +1,7 @@
-pytzwhere3
+pytzwhere
 =========
 
-pytzwhere3 is a Python 3 library to lookup the timezone for a given lat/lng entirely offline
+pytzwhere is a Python 3 library to lookup the timezone for a given lat/lng entirely offline
 
 It is a port from https://github.com/pegler/pytzwhere with a few improvements. It is faster (in the order of 100s) and uses less memory (150MB vs 750MB). Initialization is slower though and the library now requires the shapely package. This also means you need 'geos_c'.
 The original library does not seem to be maintaned anymore. If that changes in the future, I am happy to merge the codebase, but I couldn't get hold of the original author. 
